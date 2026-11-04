@@ -40,8 +40,7 @@ View and manage customer details.
 
 Visit the deployed project using GitHub Pages:
 
-https://YOUR-USERNAME.github.io/YOUR-REPOSITORY-NAME/
-
+(https://sai-charan-123.github.io/Banking-AI-based-/Banking)
 Replace the above URL with your actual GitHub Pages link.
 
 ⚙️ Functionalities
