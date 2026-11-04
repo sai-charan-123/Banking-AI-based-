@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bank Management System</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #e6f2ff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: darkblue;
+        }
+
+        .container {
+            width: 95%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            width: 180px;
+        }
+
+        button {
+            padding: 9px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .add {
+            background: green;
+        }
+
+        .edit {
+            background: orange;
+        }
+
+        .delete {
+            background: red;
+        }
+
+        .search {
+            background: blue;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: darkblue;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        h2 {
+            color: darkblue;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1> BANK MANAGEMENT SYSTEM </h1>
+
+<div class="container">
+
+    <h2>Customer Details</h2>
+
+    <input type="number" id="accno"
+           placeholder="Account Number">
+
+    <input type="text" id="name"
+           placeholder="Customer Name">
+
+    <input type="text" id="address"
+           placeholder="Address">
+
+    <input type="text" id="phone"
+           placeholder="Phone Number">
+
+    <input type="number" id="balance"
+           placeholder="Balance">
+
+    <br><br>
+
+    <button class="add" onclick="addCustomer()">
+        Add Customer
+    </button>
+
+    <button class="edit" onclick="updateCustomer()">
+        Update Customer
+    </button>
+
+    <br><br>
+
+    <input type="text" id="search"
+           placeholder="Search by Name or Account Number"
+           onkeyup="searchCustomer()">
+
+    <button class="search" onclick="searchCustomer()">
+        Search
+    </button>
+
+    <button onclick="displayCustomers()">
+        Show All
+    </button>
+
+    <h2>Customer List</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Account No</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Balance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody id="customerTable"></tbody>
+    </table>
+
+</div>
+
+<script>
+
+    // Predefined customer details
+
+    let customers = [
+        {
+            accno: "101",
+            name: "Ravi Kumar",
+            address: "Bangalore",
+            phone: "9876543210",
+            balance: 25000
+        },
+        {
+            accno: "102",
+            name: "Priya Sharma",
+            address: "Chennai",
+            phone: "9876501234",
+            balance: 35000
+        },
+        {
+            accno: "103",
+            name: "Arun Kumar",
+            address: "Hyderabad",
+            phone: "9876512345",
+            balance: 45000
+        },
+        {
+            accno: "104",
+            name: "Sneha Reddy",
+            address: "Tirupati",
+            phone: "9876523456",
+            balance: 50000
+        },
+        {
+            accno: "105",
+            name: "Rahul Verma",
+            address: "Mumbai",
+            phone: "9876534567",
+            balance: 30000
+        }
+    ];
+
+    let selectedAccount = null;
+
+    // Display customer details
+
+    function displayCustomers(data = customers) {
+
+        let table = document.getElementById("customerTable");
+
+        table.innerHTML = "";
+
+        data.forEach((c) => {
+
+            table.innerHTML += `
+                <tr>
+                    <td>${c.accno}</td>
+                    <td>${c.name}</td>
+                    <td>${c.address}</td>
+                    <td>${c.phone}</td>
+                    <td>Rs. ${c.balance}</td>
+                    <td>
+                        <button class="edit"
+                            onclick="editCustomer('${c.accno}')">
+                            Edit
+                        </button>
+
+                        <button class="delete"
+                            onclick="deleteCustomer('${c.accno}')">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // Add customer
+
+    function addCustomer() {
+
+        let accno = document.getElementById("accno").value.trim();
+        let name = document.getElementById("name").value.trim();
+        let address = document.getElementById("address").value.trim();
+        let phone = document.getElementById("phone").value.trim();
+        let balance = document.getElementById("balance").value;
+
+        if (!accno || !name || !address || !phone || balance === "") {
+            alert("Please enter all details!");
+            return;
+        }
+
+        if (customers.some(c => c.accno === accno)) {
+            alert("Account number already exists!");
+            return;
+        }
+
+        customers.push({
+            accno,
+            name,
+            address,
+            phone,
+            balance: Number(balance)
+        });
+
+        alert("Customer Added Successfully!");
+
+        clearForm();
+        displayCustomers();
+    }
+
+    // Edit customer
+
+    function editCustomer(accno) {
+
+        let c = customers.find(c => c.accno === accno);
+
+        if (c) {
+            document.getElementById("accno").value = c.accno;
+            document.getElementById("name").value = c.name;
+            document.getElementById("address").value = c.address;
+            document.getElementById("phone").value = c.phone;
+            document.getElementById("balance").value = c.balance;
+
+            selectedAccount = accno;
+        }
+    }
+
+    // Update customer
+
+    function updateCustomer() {
+
+        if (!selectedAccount) {
+            alert("Please select a customer to edit!");
+            return;
+        }
+
+        let c = customers.find(c => c.accno === selectedAccount);
+
+        let name = document.getElementById("name").value.trim();
+        let address = document.getElementById("address").value.trim();
+        let phone = document.getElementById("phone").value.trim();
+        let balance = document.getElementById("balance").value;
+
+        if (!name || !address || !phone || balance === "") {
+            alert("Please fill all details!");
+            return;
+        }
+
+        c.name = name;
+        c.address = address;
+        c.phone = phone;
+        c.balance = Number(balance);
+
+        alert("Customer Updated Successfully!");
+
+        selectedAccount = null;
+        clearForm();
+        displayCustomers();
+    }
+
+    // Delete customer
+
+    function deleteCustomer(accno) {
+
+        if (confirm("Are you sure you want to delete?")) {
+
+            customers = customers.filter(c => c.accno !== accno);
+
+            alert("Customer Deleted Successfully!");
+
+            displayCustomers();
+        }
+    }
+
+    // Search customer
+
+    function searchCustomer() {
+
+        let value = document.getElementById("search").value.toLowerCase();
+
+        let result = customers.filter(c =>
+            c.name.toLowerCase().includes(value) ||
+            c.accno.toLowerCase().includes(value)
+        );
+
+        displayCustomers(result);
+    }
+
+    // Clear input fields
+
+    function clearForm() {
+
+        document.getElementById("accno").value = "";
+        document.getElementById("name").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("balance").value = "";
+
+        selectedAccount = null;
+    }
+
+    // Initial display
+
+    displayCustomers();
+
+</script>
+
+</body>
+</html>
